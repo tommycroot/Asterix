@@ -1,78 +1,87 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <title>Roman Invaders!</title>
-    <link rel="stylesheet" href="styles/main.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap" rel="stylesheet">
-    <script src="scripts/app.js" charset="utf-8"></script>
-    </head>
-    
-    <body>
-      <h1>Roman Invaders!</h1>
-    <div class="start-page">
-      <img class="hero" src="./assets/sprites/asterix__dogmatix_and_obelix__by_outlawninja-d9nej9b.png">
-      <h3>Click on Asterix and Obleix to play!</h3>
-    </div>
-    <div class="container hidden">
 
-      <div class="grid-wrapper">
-        <div class="select-player">
-          <h3 id="choose">CHOOSE A FIGHTER</h3>
-          <div class="two-player-container">
-            <div class="fighter-container asterix">
-              <img class="fighter-image asterix" src="./assets/characters/asterix.gif">
-              <p class="fighter-name asterix">Asterix</p>
-            </div>
-            <div class="fighter-container obelix">
-              <img class="fighter-image obelix" src="./assets/characters/obelix.gif">
-              <p class="fighter-name obelix">Obelix</p>
-            </div>
-            <div class="getafix">
-              <img src="./assets/characters/getafix-gif.gif">
-            </div>
+<head>
+  <meta charset="utf-8">
+  <title>Roman Invaders!</title>
+  <link rel="stylesheet" href="styles/main.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap" rel="stylesheet">
+  <script src="scripts/app.js" charset="utf-8"></script>
+</head>
+
+<body>
+  <h1>Roman Invaders!</h1>
+  <div class="start-page">
+    <img class="hero" src="./assets/sprites/asterix__dogmatix_and_obelix__by_outlawninja-d9nej9b.png">
+    <h3 id="enter">Click on Asterix and Obleix to play!</h3>
+  </div>
+  <div class="container hidden">
+
+    <div class="grid-wrapper">
+      <div class="select-fighter">
+        <h3 id="choose">CHOOSE A FIGHTER</h3>
+        <div class="two-player-container">
+          <div class="fighter-container asterix">
+            <img class="fighter-image asterix" src="./assets/characters/asterix.gif">
+            <p class="fighter-name asterix">Asterix</p>
+          </div>
+          <div class="fighter-container obelix">
+            <img class="fighter-image obelix" src="./assets/characters/obelix.gif">
+            <p class="fighter-name obelix">Obelix</p>
+          </div>
+          <div class="getafix">
+            <img src="./assets/characters/getafix-gif.gif">
           </div>
         </div>
+      </div>
+      <div class="enter-level-one intermediary hidden">
+        <h3>LEVEL 1</h3>
+        <div class="opponent-container">
+          <img src="./assets/characters/tenor.gif">
         </div>
-
-
-      <div class="right-container">
-        <button id="restart">RESTART</button>
-    
-        <div class="status-container">
-          <div class="scores-container">
-            <div class="score">SCORE:&nbsp;<span id="current-score">0</span></div>
-            <div class="score">HIGH SCORE:&nbsp;<span id="high-score"></span></div>
-          </div>
-          <div class="lives">
-            LIVES:&nbsp;<span id="hearts">❤️❤️❤️</span>
-          </div>
-          <div class="level">
-            LEVEL:&nbsp;<span id="current-level">1</span>
-          </div>
-        </div>
-    
-        <div class="how-to-play">
-          <span id="how-to">HOW TO PLAY</span>
-          <ul>
-            <li>Choose a fighter</li>
-            <li>Move left ← or right →</li>
-            <li>Shoot with spacebar</li>
-            <li>Complete three levels</li>
-            <li>Save the Gaul Village</li>
-          </ul>
-        </div>
-
+      </div>
+      <div class="grid hidden">
       </div>
     </div>
+   
 
-        <div class="grid hidden">
+
+    <div class="right-container">
+      <button id="restart">RESTART</button>
+
+      <div class="status-container">
+        <div class="scores-container">
+          <div class="score">SCORE:&nbsp;<span id="current-score">0</span></div>
+          <div class="score">HIGH SCORE:&nbsp;<span id="high-score"></span></div>
         </div>
+        <div class="lives">
+          LIVES:&nbsp;<span id="hearts">❤️❤️❤️</span>
+        </div>
+        <div class="level">
+          LEVEL:&nbsp;<span id="current-level">1</span>
+        </div>
+      </div>
+
+      <div class="how-to-play">
+        <span id="how-to">HOW TO PLAY</span>
+        <ul>
+          <li>Choose a fighter</li>
+          <li>Move left ← or right →</li>
+          <li>Shoot with spacebar</li>
+          <li>Complete three levels</li>
+          <li>Save the Gaul Village</li>
+          </ul>
+          </div>
+
+
+          </div>
+          </div>
 
 
 
-  </body>
-  <footer>Created by Tommy Croot</footer>
+</body>
+<footer>Created by Tommy Croot</footer>
+
 </html>
