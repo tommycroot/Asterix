@@ -186,6 +186,8 @@ ul {
   border-radius: 10px;
   box-shadow: 0px 0px 20px rgb(255 255 255 / 40%);
   background-image: url(../assets/characters/grid.jpg) !important;
+  background-size: cover;
+  background-repeat: no-repeat;
 }
 
 
@@ -300,8 +302,51 @@ ul {
   background-size: contain;
 }
 
-.roman {
+.roman1 {
   background-image: url('../assets/characters/rom.gif');
   background-repeat: no-repeat;
   background-size: contain;
+}
+
+.roman2 {
+  background-image: url('../assets/characters/rom.gif');
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.roman3 {
+  background-image: url('../assets/characters/rom.gif');
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.roman4 {
+  background-image: url('../assets/characters/rom.gif');
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.fist {
+  background-image: url('../assets/characters/fist.png');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 30px;
+}
+
+.pow {
+  background-image: url('../assets/characters/pow.gif');
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.game-over-container {
+  width: 600px;
+  height: 400px;
+  border-radius: 10px;
+}
+
+.game-over-lost {
+  background-image: url('../assets/characters/game-over-lost.gif');
+  background-repeat: no-repeat;
+  background-position: center;
 }
