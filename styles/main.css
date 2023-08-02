@@ -110,11 +110,11 @@ ul {
   background-color: black; 
   width: 720px;
   height: 680px;
-  border: 2px solid purple;
   border-radius: 10px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  border: 4px solid black;
 }
 
 
@@ -170,8 +170,7 @@ ul {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 720px;
-  height: 680px;
+
   color: rgba(0, 0, 0, 1);
   border-radius: 10px;
   box-shadow: 0px 0px 20px rgb(255 255 255 / 40%);
@@ -188,19 +187,20 @@ ul {
   background-image: url(../assets/characters/grid.jpg) !important;
   background-size: cover;
   background-repeat: no-repeat;
+  border: 4px solid black;
 }
 
 
 
 .intermediary {
-  background-color:blueviolet;
   width: 720px;
   height: 680px;
-  border: 2px solid black;
+  background-color:blueviolet;
   border-radius: 10px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  border: 4px solid black;
 }
 
 /* Choose a player */
@@ -258,7 +258,7 @@ ul {
 }
 
 .getafix {
-  margin-top: 40px;
+  margin-top: 20px;
   background-color: blueviolet;
   width: 280px; /* Set the desired width */
   height: 280px; /* Set the desired height */
@@ -278,8 +278,8 @@ ul {
 }
 
 .opponent-container {
-  width: 600px;
-  height: 400px;
+  width: 640px;
+  height: 680px;
   text-align: center;
   background-color: blueviolet;
 }
@@ -333,6 +333,19 @@ ul {
   background-size: 30px;
 }
 
+.boulder {
+  background-image: url('../assets/characters/boulder.png');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 30px;
+}
+
+.oh-no{
+  background-image: url('../assets/characters/ohno.gif');
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
 .pow {
   background-image: url('../assets/characters/pow.gif');
   background-repeat: no-repeat;
@@ -340,13 +353,22 @@ ul {
 }
 
 .game-over-container {
-  width: 600px;
-  height: 400px;
+  width: 720px;
+  height: 680px;
   border-radius: 10px;
 }
 
 .game-over-lost {
   background-image: url('../assets/characters/game-over-lost.gif');
   background-repeat: no-repeat;
+  background-position: center;
+}
+
+.winner {
+  width: 720px;
+  height: 680px;
+  background-image: url('../assets/characters/banquet.gif');
+  background-repeat: no-repeat;
+  background-size: contain;
   background-position: center;
 }
