@@ -20,12 +20,16 @@ function init() {
   // Asterix boolean
   let selectedAsterix = false
   let level = 1
+  let lives = 3
   let score = 0
   // Obelix boolean
   let selectedObelix = false
   let intervalTime = 1000
   const decreaseInterval = 150
+
+  const boulderMovementTime = 300
   let selectedFighterBoolean = [selectedAsterix, selectedObelix]
+  let romanBoulderInterval
 
   // Entering the grid
   const enterLevelOne = document.querySelector('.enter-level-one')
@@ -40,6 +44,7 @@ function init() {
   const currentLevelDisplay = document.querySelector('#current-level')
   const levelOneComplete = document.querySelector('.won-level-one')
   const levelTwoComplete = document.querySelector('.won-level-two')
+  const levelThreeComplete = document.querySelector('.won-game')
   const toLevelTwoButton = document.querySelector('#to-level-two')
   const toLevelThreeButton = document.querySelector('#to-level-three')
 
@@ -281,6 +286,65 @@ function init() {
   }
 
 
+  function addRomanBoulder(position) {
+    if (position < cellCount) {
+      cells[position].classList.add('boulder')
+    }
+  }
+
+
+  function removeRomanBoulder(position) {
+    if (position < cellCount) {
+      cells[position].classList.remove('boulder')
+    }
+  }
+
+    // Roman shoot boulder function
+    function romanBoulders() {
+      // Set a random variable that starts from a position + width of any one of the opponents
+      let randomShotIndex = totalRomanArray[Math.floor(Math.random() * totalRomanArray.length)] + width
+      // If cell of the romanSpear contains a player, change the image using setTimeout and remove the football and -1 a heart
+      // If not continue to move on until the ball reaches the bottom row of the grid
+      // This interval is the interval where the shot flies across the grid
+      const romanBoulderMovement = setInterval(() => {
+        // Remove the football when reached the bottom row or when the grid is hid
+        if (randomShotIndex >= cellCount) {
+          removeRomanBoulder(randomShotIndex)
+          clearInterval(romanBoulderMovement)
+        } else if (cells[randomShotIndex].classList.contains('asterixFighter') || cells[randomShotIndex].classList.contains('obelixFighter')) {
+          fighterRemover(randomShotIndex, romanBoulderMovement)
+        } else if (restartButton.addEventListener('click', restartGame) || grid.classList.contains('hidden')) {
+          clearInterval(romanBoulderMovement)
+        } else {
+          removeRomanBoulder(randomShotIndex)
+          randomShotIndex += width
+          addRomanBoulder(randomShotIndex)
+        }
+      }, boulderMovementTime)
+    }
+
+    function fighterRemover(index, interval) {
+      removeRomanBoulder(index)
+      // Show yellow card when hit with a football
+      cells[index].classList.add('oh-no')
+      ohNo = setTimeout(() => {
+        cells[index].classList.remove('oh-no')
+      }, 200)
+      // Remove a life
+      lives--
+      heartsDisplay.innerHTML = '❤️'.repeat(lives)
+      // Remove 50 points
+      score -= 50
+      scoreDisplay.innerHTML = score
+      // Clear the interval set within the opponent shots function (which would be the const opponentShotMovement), so that the player doesn't die repeatedly
+      clearInterval(interval)
+      // If there are no lives left, clear the opponentShotInterval (the interval makes the opponents shoot every set interval time), show "game over" in heartsDisplay, and move to the endGameLost function
+      if (lives === 0) {
+        clearInterval(romanBoulderInterval)
+        heartsDisplay.innerHTML = 'GAME OVER'
+        endGameLost()
+      } 
+    }
 
   function startGame() {
     // Hide the select player class
@@ -299,7 +363,9 @@ function init() {
       moveRomans()
       // Update variable name here from fighterContainerContainer to fighterContainer
       fighterContainer.forEach(fighter => fighter.addEventListener('click', selectFighter))
-
+      romanBoulderInterval = setInterval(() => {
+        romanBoulders()
+      }, 2000)
     }, 3000)
   }
 
@@ -328,6 +394,8 @@ function init() {
       selectFighterDisplay.classList.remove('hidden')
       lostGame.classList.add('hidden')
       levelOneComplete.classList.add('hidden')
+      levelTwoComplete.classList.add('hidden')
+      levelThreeComplete.classList.add('hidden')
 
     }
   }
@@ -335,6 +403,8 @@ function init() {
   const gridLevelOne = new restartDisplay(grid)
 
   function restartGame() {
+    clearInterval(romanMovements)
+    clearInterval(romanBoulderInterval)
     // Return to select player for each display
     if (!selectFighterDisplay.classList.contains('hidden')) {
       selectFighterDisplay.classList.remove('hidden')
@@ -343,8 +413,9 @@ function init() {
       clearTimeout(enteringGame)
       enteringGame = null
       enterLevelOne.classList.add('hidden')
+      
       selectFighterDisplay.classList.remove('hidden')
-    } else if (!grid.classList.contains('hidden') && level === 1) {
+    } else if (!grid.classList.contains('hidden')) {
       gridLevelOne.restart()
     } 
     // Remove clicked class from the select player containers using a for loop around the player selection array
@@ -359,7 +430,8 @@ function init() {
     // Reset the selectedPlayer boolean array
     selectedFighterBoolean= [selectedAsterix, selectedObelix ]
     // Clear opponents and their movement/shot interval
-    clearInterval(romanMovements)
+    
+    romanBoulderInterval = null
     romanMovements = null
 
     // Reset the arrays
@@ -389,6 +461,8 @@ function init() {
     // Clear the interval and set the intervals back to null
     clearInterval(romanMovements)
     romanMovements = null
+    clearInterval(romanBoulderInterval)
+    romanBoulderInterval = null
     // Reset the arrays
     romanOne = [2, 3, 4]
     romanTwo = [10, 11, 12, 13, 14, 15, 16]
@@ -405,11 +479,14 @@ function init() {
       grid.classList.add('hidden')
       levelOneComplete.classList.remove('hidden')
     } 
-    if (level === 2) {
+    else if (level === 2) {
       // Show won level two
       grid.classList.add('hidden')
       levelTwoComplete.classList.remove('hidden')
-    } 
+    } else if (level === 3) {
+      grid.classList.add('hidden')
+      levelThreeComplete.classList.remove('hidden')
+    }
   }
 
   function levelTwo() {
@@ -426,7 +503,10 @@ function init() {
     addRomans()
     // Apply move opponent function with the new decreased interval
     moveRomans()
-    // Opponents shoot the football in a shorter interval now
+    // Opponents shoot the football in a shorter interval 
+    romanBoulderInterval = setInterval(() => {
+      romanBoulders()
+    }, 1600)
   }
 
   function levelThree() {
@@ -444,10 +524,14 @@ function init() {
     // Apply move opponent function with the new decreased interval
     moveRomans()
     // Opponents shoot the football in a shorter interval now
+    romanBoulderInterval = setInterval(() => {
+      romanBoulders()
+    }, 1200)
   }
 
   createGrid()
 
+  
   hero.addEventListener('click', enterGame)
   document.addEventListener('keydown', movePlayer)
   document.addEventListener('keydown', myShot)
