@@ -36,37 +36,38 @@
         </div>
       </div>
       <div class="enter-level-one intermediary hidden">
-        <h3>LEVEL 1</h3>
+        <h3>STARTING LEVEL 1...</h3>
         <div class="opponent-container">
           <img src="./assets/characters/tenor.gif">
         </div>
+        <h2>These Romans are crazy!</h2>
       </div>
       <div class="grid hidden">
       </div>
     </div>
     <div class="won-level-one intermediary hidden">
-      <h3>YOU DEFEATED THE ROMANS BUT THERE ARE MORE COMING</h3>
+      <h3>MORE ROMANS ARE ARRIVING!</h3>
       <div class="opponent-container">
         <img src="./assets/characters/rom2.gif">
       </div>
       <button class="next-level" id="to-level-two">
-        <p>LEVEL 2</p>
+        <p>START LEVEL 2</p>
       </button>
     </div>
     <div class="won-level-two intermediary hidden">
-      <h3>YOU DEFEATED THE ROMANS BUT THERE ARE MORE COMING</h3>
+      <h3>YOU HAVE CAESER'S ATTENTION NOW!</h3>
       <div class="opponent-container">
         <img src="./assets/characters/rom3.gif">
       </div>
       <button class="next-level" id="to-level-three">
-        <p>LEVEL 3</p>
+        <p>START LEVEL 3</p>
       </button>
     </div>
     <div class="won-game game-over intermediary hidden">
-      <h3>WELL DONE! YOU DEFEATED THE ROMANS</h3>
+      <h3 id="top-line">BY TOUTATIS! YOU DEFEATED THE ROMANS!</h3>
       <div class="game-over-container winner">
       </div>
-      <h3>PRESS RESTART TO PLAY AGAIN!</h3>
+      <h3 id="bottom-line">PRESS RESTART TO PLAY AGAIN!</h3>
     </div>
 
     <div class="lost-game game-over intermediary hidden">
@@ -77,8 +78,8 @@
     </div>
 
     <div class="right-container">
-      <button id="restart">RESTART</button>
 
+      <button id="restart">RESTART</button>
       <div class="status-container">
         <div class="scores-container">
           <div class="score">SCORE:&nbsp;<span id="current-score">0</span></div>
@@ -90,6 +91,9 @@
         <div class="level">
           LEVEL:&nbsp;<span id="current-level">1</span>
         </div>
+        <button class="sound" type="button">
+          <span class="sound-button-text">MUTE</span>
+        </button>
       </div>
 
       <div class="how-to-play">
@@ -98,17 +102,21 @@
           <li>Choose a fighter</li>
           <li>Move left ← or right →</li>
           <li>Shoot with spacebar</li>
-          <li>Complete three levels</li>
-          <li>Save the Gaul Village</li>
+          <li>Complete all three levels</li>
+          <li>Save the Gaul Village from the Roman attack!</li>
         </ul>
       </div>
-
-
     </div>
   </div>
 
 
-
+  <audio class="level-music" src="./assets/audio/level.mp3"></audio>
+  <audio class="menu" src="./assets/audio/menu.mp3"></audio>
+  <audio class="lose-life" src="./assets/audio/loselife.mp3"></audio>
+  <audio class="level-start" src="./assets/audio/levelStart.mp3"></audio>
+  <audio class="game-won" src="./assets/audio/gamewon.mp3"></audio>
+  <audio class="game-over-music" src="./assets/audio/gameover.mp3"></audio>
+  
 </body>
 <footer>Created by Tommy Croot</footer>
 
