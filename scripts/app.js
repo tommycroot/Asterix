@@ -1,40 +1,27 @@
 function init() {
+
+  // ! Elements
+
+  // Start game
   const startPage = document.querySelector('.start-page')
   const hero = document.querySelector('.hero')
   const gameContainer = document.querySelector('.container')
   const lostGame = document.querySelector('.lost-game')
 
-  //Select Fighter
+  // Select Fighter
   const selectFighterDisplay = document.querySelector('.select-fighter')
   const fighterContainer = document.querySelectorAll('.fighter-container')
   const asterix = document.querySelector('.asterix')
   const obelix = document.querySelector('.obelix')
-
-  // Player selection display arrays 
-  const fighterSelection = [asterix, obelix]
-  const fighterSelectionString = ['asterix', 'obelix']
 
   // Timeout for entering the game
   let enteringGame
 
   // Asterix boolean
   let selectedAsterix = false
-  let level = 1
-  let lives = 3
-  let score = 0
+  
   // Obelix boolean
   let selectedObelix = false
-  let intervalTime = 1000
-  const decreaseInterval = 150
-
-  const boulderMovementTime = 300
-  let selectedFighterBoolean = [selectedAsterix, selectedObelix]
-  let romanBoulderInterval
-
-  // Entering the grid
-  const enterLevelOne = document.querySelector('.enter-level-one')
-  const grid = document.querySelector('.grid')
-
 
   // Right container display
   const restartButton = document.querySelector('#restart')
@@ -47,16 +34,85 @@ function init() {
   const levelThreeComplete = document.querySelector('.won-game')
   const toLevelTwoButton = document.querySelector('#to-level-two')
   const toLevelThreeButton = document.querySelector('#to-level-three')
+  const menuMusic = document.querySelector('.menu')
+  const levelMusic = document.querySelector('.level-music')
+  const loseLife = document.querySelector('.lose-life')
+  const levelStart = document.querySelector('.level-start')
+  const gameWon = document.querySelector('.game-won')
+  const gameOverMusic = document.querySelector('.game-over-music')
+  const soundButton = document.querySelector('.sound')
 
-  const fighterClassArray = ['asterixFighter', 'obelixFighter']
+  const soundEffects = [menuMusic, levelMusic, loseLife, levelStart, gameWon, gameOverMusic]
 
+  function muteAudio() {
+    soundEffects.forEach(soundEffect => {
+      soundEffect.muted = !soundEffect.muted
+    })
+  
+    const soundButtonText = soundButton.querySelector('.sound-button-text')
+    if (soundEffects[0].muted) {
+      soundButtonText.textContent = 'UNMUTE'
+    } else {
+      soundButtonText.textContent = 'MUTE'
+    }
+  }
+
+  const highScore = localStorage.getItem('highscore')
+  if (highScore !== null) {
+    highScoreDisplay.innerHTML = highScore
+  } else {
+    highScoreDisplay.innerHTML = 0
+  }
+  
+  
+  function highScoreChecker() {
+    // Save the final score if it is the highest score
+    if (highScore !== null) {
+      if (score >= parseInt(highScore)) {
+        localStorage.setItem('highscore', score)
+        highScoreDisplay.innerHTML = score
+      }
+    } else {
+      localStorage.setItem('highscore', score)
+    }
+  }
+  
+  // Variables
+  let level = 1
+  let lives = 3
+  let score = 0
+  let intervalTime = 1000
+  let romanBoulderInterval
+
+  // Timings
+  const decreaseInterval = 150
+  const boulderMovementTime = 300
+
+
+  // Function to enter grid screen
   function enterGame() {
     // Hide startPage and unhide gameContainer
     startPage.classList.add('hidden')
     gameContainer.classList.remove('hidden')
+    menuMusic.currentTime = 0 // Rewind the audio to the beginning
+    menuMusic.play()
+    menuMusic.volume = 0.5
+
+    // Listen for the 'ended' event and replay menuMusic when it ends
+    menuMusic.addEventListener('ended', function () {
+      menuMusic.currentTime = 0
+      menuMusic.play()
+    })
   }
 
+
+
   //*GRID */
+
+  // Entering the grid
+  const enterLevelOne = document.querySelector('.enter-level-one')
+  const grid = document.querySelector('.grid')
+
   // Width
   const width = 10
 
@@ -64,7 +120,7 @@ function init() {
   const cellCount = width * width
   const cells = []
   function createGrid() {
-    // Using the total cell count we've saved to a variable we're going to use a for loop to iterate that many times
+    // Using the total cell count
     for (let i = 0; i < cellCount; i++) {
       // Create div
       const cell = document.createElement('div')
@@ -76,6 +132,7 @@ function init() {
       cells.push(cell)
     }
   }
+  
 
   //*PLAYER MOVEMENT */
 
@@ -83,10 +140,31 @@ function init() {
   const right = 39
   const left = 37
   const space = 32
+
   // Starting position of the player
   const startingPosition = 94
   let currentPosition = startingPosition
 
+
+  // Fighter selection display arrays 
+  const fighterSelection = [asterix, obelix]
+  const fighterSelectionString = ['asterix', 'obelix']
+  const fighterClassArray = ['asterixFighter', 'obelixFighter']
+  let selectedFighterBoolean = [selectedAsterix, selectedObelix]
+
+  function selectFighter(e) {
+    // Selecting fighter class to add
+    for (let i = 0; i < fighterSelection.length; i++) {
+      if (e.target.classList.contains(fighterSelectionString[i])) {
+        selectedFighterBoolean[i] = true
+        fighterSelection[i].classList.add('clicked')
+        selectFighterDisplay.classList.add('hidden')
+      }
+    }
+    startGame()
+  }
+
+  // Function to add fighter
   function addPlayer(position) {
     for (let i = 0; i < selectedFighterBoolean.length; i++) {
       if (selectedFighterBoolean[i] === true) {
@@ -94,8 +172,10 @@ function init() {
       }
     }
   }
+
+  // Function to remove fighter
   function removePlayer() {
-    // The class of the player that is selected is removed
+    // The class of the fighter that is selected is removed
     for (let i = 0; i < selectedFighterBoolean.length; i++) {
       if (selectedFighterBoolean[i] === true) {
         cells[currentPosition].classList.remove(fighterClassArray[i])
@@ -103,9 +183,10 @@ function init() {
     }
   }
 
+  // Move fighter function
   function movePlayer(e) {
     removePlayer()
-    // Only move the player within the grids 90-99 and when there is the game grid in on display
+    // Only move the player within the grid cells 90-99 and the game grid in displayed
     if (e.keyCode === right && currentPosition % width !== width - 1 && !grid.classList.contains('hidden')) {
       // Prevent the default arrow keys to work
       e.preventDefault()
@@ -118,42 +199,44 @@ function init() {
     addPlayer(currentPosition)
   }
 
-  function selectFighter(e) {
-    // Selecting player class to add
-    for (let i = 0; i < fighterSelection.length; i++) {
-      if (e.target.classList.contains(fighterSelectionString[i])) {
-        selectedFighterBoolean[i] = true
-        fighterSelection[i].classList.add('clicked')
-        selectFighterDisplay.classList.add('hidden')
-      }
-    }
-    startGame()
-  }
 
+  // Starting Roman position arrays 
+  
   let romanOne = [2, 3, 4]
   let romanTwo = [10, 11, 12, 13, 14, 15, 16]
   let romanThree = [20, 21, 22, 23, 24, 25, 26]
   let romanFour = [31, 32, 33, 34, 35]
-  // Total array of romans that will be used later to prevent errors when the roman move out of the grid and to check if all of the roman were removed 
+  // Total array of Romans for when the Romans move out of the grid and to check if all Romans were hit 
   let totalRomanArray = romanOne.concat(romanTwo.concat(romanThree.concat(romanFour)))
 
 
+  // Add Romans function
   function addRomans() {
-      romanOne.forEach(opponents => cells[opponents].classList.add('roman1'))
-      romanTwo.forEach(opponents => cells[opponents].classList.add('roman2'))
-      romanThree.forEach(opponents => cells[opponents].classList.add('roman3'))
-      romanFour.forEach(opponents => cells[opponents].classList.add('roman4'))
+      romanOne.forEach(romans => cells[romans].classList.add('roman1'))
+      romanTwo.forEach(romans => cells[romans].classList.add('roman2'))
+      romanThree.forEach(romans => cells[romans].classList.add('roman3'))
+      romanFour.forEach(romans => cells[romans].classList.add('roman4'))
+  }
+
+  // Remove Romans function
+  function removeRomans() {
+    // Remove Roman image class based on position
+      romanOne.forEach(romans=> cells[romans].classList.remove('roman1'))
+      romanTwo.forEach(romans => cells[romans].classList.remove('roman2'))
+      romanThree.forEach(romans => cells[romans].classList.remove('roman3'))
+      romanFour.forEach(romans => cells[romans].classList.remove('roman4'))
+      // Update totalRomanArray by filtering out the positions of the removed Romans
   }
 
   function moveRomans() {
-    // A function that uses add and remove player functions to automatically move the romans within the cells using interval times
-    // Variables that track the movement of the romans
+    // A function that uses add and remove Romans functions to move Romans within the cells using interval times
+    // Variables to track the movement of the Romans
     let romansMoved = 0
     let movesRight = true
     let movesLeft = false
     const movementLength = width - romanTwo.length
     romanMovements = setInterval(() => {
-      // Set conditionals to check whether the movement is left or right. After the romans group (each array of positions) moves movementLength(number), then move down. 
+      // Set condition to check whether the movement is left or right. When Romans (each array) have moved the movementLength they move down and move in the opposite direction. 
       removeRomans()
       if (romansMoved < movementLength && movesRight) {
         romanOne = romanOne.map(roman => roman + 1)
@@ -187,7 +270,7 @@ function init() {
         romansMoved = 0
         movesRight = true
         movesLeft = false
-        // When any of the opponents reaches the bottom of the grid, endGameLost.
+        // When Romans reach the bottom of the grid, end the game.
         if (totalRomanArray.some(roman => roman >= cellCount - width)) {
           endGameLost()
         }
@@ -196,16 +279,9 @@ function init() {
     }, intervalTime)
   }
 
-  function removeRomans() {
-    // Remove roman images based on their position
-      romanOne.forEach(opponents => cells[opponents].classList.remove('roman1'))
-      romanTwo.forEach(opponents => cells[opponents].classList.remove('roman2'))
-      romanThree.forEach(opponents => cells[opponents].classList.remove('roman3'))
-      romanFour.forEach(opponents => cells[opponents].classList.remove('roman4'))
-      // Update totalRomanArray by filtering out the positions of the removed Romans
-  }
 
-  // Player Shooting
+
+  // ! Asterix/Obelix shooting
 
   // Add fist function
   function addFist(position) {
@@ -221,16 +297,17 @@ function init() {
     }
   }
 
+  // Function to remove Romans if hit by a shot
   function romanRemover(roman, index, romanArray) {
-    // Remove fist and the  image
+    // Remove fist and the Roman hit from the grid
     removeFist(index)
     cells[index].classList.remove(roman)
-    // Add the pow and remove it when the timeout ends
+    // Add the 'Pow' class and remove it when the timeout ends
     cells[index].classList.add('pow')
     setTimeout(() => {
       cells[index].classList.remove('pow')
     }, 300)
-    // Remove the index of the opponent that was hit in the opponent arrays
+    // Remove the index of the Roman that was hit in the Roman arrays
     const romanIndex = romanArray.indexOf(index)
     romanArray.splice(romanIndex, 1)
     const totalRomanIndex = totalRomanArray.indexOf(index)
@@ -239,20 +316,21 @@ function init() {
     // Increment the score
     score += 10
     scoreDisplay.innerHTML = score
+    // To check if all Romans are defeated
     if (totalRomanArray.length === 0) {
       gameCheck()
     }
   }
 
-  // My player shoots the ball function
+  // Asterix/Obelix shoot fist function
   function myShot(e) {
     if (e.keyCode === space && !grid.classList.contains('hidden')) {
       // Prevent the default shift key to work
       e.preventDefault()
-      // Fist position at start (right above cell of the player image)
+      // Fist position at start (right above cell of Asterix/Obelx image)
       let shotIndex = currentPosition - width
       addFist(shotIndex)
-      // Shot remover function that will be used for each opponent character
+      // First remover function that will be used for each opponent character
       // Rather than declaring a global variable, the interval variable is declared locally.
       const shotMovement = setInterval(() => {
         // When the opponent grid cell is equal to the cell of the fist I shot, remove the specific opponent player, the football, the shotIndex value within the four opponents array and add 10 points to the score
@@ -285,26 +363,28 @@ function init() {
     }
   }
 
+  // ! Romans shooting
 
+  // Function to add boulder
   function addRomanBoulder(position) {
     if (position < cellCount) {
       cells[position].classList.add('boulder')
     }
   }
 
-
+  // Function to remove boulder
   function removeRomanBoulder(position) {
     if (position < cellCount) {
       cells[position].classList.remove('boulder')
     }
   }
 
-    // Roman shoot boulder function
+    // Function for Romans to shoot boulders
     function romanBoulders() {
-      // Set a random variable that starts from a position + width of any one of the opponents
+      // Set a random variable that starts from a position + width of any one of the Romans
       let randomShotIndex = totalRomanArray[Math.floor(Math.random() * totalRomanArray.length)] + width
-      // If cell of the romanSpear contains a player, change the image using setTimeout and remove the football and -1 a heart
-      // If not continue to move on until the ball reaches the bottom row of the grid
+      // If cell of the boulder class contains Asterix/Obelix, the image is changed using setTimeout, the boulder is removed and -1 a heart
+      // If not continue to move the boulder until ut reaches the bottom row of the grid
       // This interval is the interval where the shot flies across the grid
       const romanBoulderMovement = setInterval(() => {
         // Remove the football when reached the bottom row or when the grid is hid
@@ -323,10 +403,13 @@ function init() {
       }, boulderMovementTime)
     }
 
+    // Function to change class of Asterix/Obelix when hit to show life lost
     function fighterRemover(index, interval) {
       removeRomanBoulder(index)
-      // Show yellow card when hit with a football
+      // Show 'Oh no!' when hit with a boulder
       cells[index].classList.add('oh-no')
+      loseLife.play()
+      loseLife.volume = 0.6
       ohNo = setTimeout(() => {
         cells[index].classList.remove('oh-no')
       }, 200)
@@ -335,10 +418,11 @@ function init() {
       heartsDisplay.innerHTML = '❤️'.repeat(lives)
       // Remove 50 points
       score -= 50
+      // Update score
       scoreDisplay.innerHTML = score
-      // Clear the interval set within the opponent shots function (which would be the const opponentShotMovement), so that the player doesn't die repeatedly
+      // Clear the interval set within the Roman shots function (romanBoulderMovement), so that player doesn't repeatedly die
       clearInterval(interval)
-      // If there are no lives left, clear the opponentShotInterval (the interval makes the opponents shoot every set interval time), show "game over" in heartsDisplay, and move to the endGameLost function
+      // If there are no lives left, clear the romanBoulderIntervl (the interval that makes the Romans shoot), display "game over" in heartsDisplay, and move to the endGameLost function
       if (lives === 0) {
         clearInterval(romanBoulderInterval)
         heartsDisplay.innerHTML = 'GAME OVER'
@@ -346,39 +430,58 @@ function init() {
       } 
     }
 
+  // Functon to start the game
   function startGame() {
-    // Hide the select player class
+    menuMusic.pause()
+    levelStart.play()
+    levelStart.volume = 0.4
+    // Hide the select fighter class
     selectFighterDisplay.classList.add('hidden')
     // Hide the container that contains fighter selection
     enterLevelOne.classList.remove('hidden')
-    // Unhide enter-level-one class and give a timeout of 3 seconds and hide enter-level-one and unhide grid class
+    
+    // Unhide enter-level-one class (cutscene) and give a timeout of 3 seconds. Then hide enter-level-one (cutscene) and unhide grid class so game begins
     enteringGame = setTimeout(() => {
-
       // Enter the grid
+      levelMusic.currentTime = 0 // Rewind the audio to the beginning
+
+      // Listen for the 'ended' event and replay menuMusic when it ends
+      levelMusic.addEventListener('ended', function () {
+        levelMusic.currentTime = 0
+        levelMusic.play()
+      })
+      levelMusic.play()
+      
       enterLevelOne.classList.add('hidden')
       grid.classList.remove('hidden')
       document.body.classList.add('grid-visible')
       addPlayer(startingPosition)
       addRomans()
       moveRomans()
-      // Update variable name here from fighterContainerContainer to fighterContainer
-      fighterContainer.forEach(fighter => fighter.addEventListener('click', selectFighter))
       romanBoulderInterval = setInterval(() => {
         romanBoulders()
       }, 2000)
     }, 3000)
   }
 
+  // Function for when the game is lost
   function endGameLost() {
-    // Clear the opponent movement interval
+    highScoreChecker()
+    // Clear the Roman movement interval
+    levelMusic.pause()
+    loseLife.pause()
+    gameOverMusic.play()
+    gameOverMusic.volume = 0.2
     clearInterval(romanMovements)
     // Show the lostGame display
     grid.classList.add('hidden')
     lostGame.classList.remove('hidden')
     // Remove all the elements in the grid
     removeEverything()
+    highScoreChecker()
   }
 
+  // Remove the grid
   function removeEverything() {
     cells.forEach(cell => {
       cell.className = ''
@@ -403,9 +506,13 @@ function init() {
   const gridLevelOne = new restartDisplay(grid)
 
   function restartGame() {
+    //Clear intervals
+    levelMusic.pause()
+    gameWon.pause()
+    menuMusic.play()
     clearInterval(romanMovements)
     clearInterval(romanBoulderInterval)
-    // Return to select player for each display
+    // Return to select fighter for each display
     if (!selectFighterDisplay.classList.contains('hidden')) {
       selectFighterDisplay.classList.remove('hidden')
     } else if (!enterLevelOne.classList.contains('hidden')) {
@@ -413,7 +520,7 @@ function init() {
       clearTimeout(enteringGame)
       enteringGame = null
       enterLevelOne.classList.add('hidden')
-      
+      // Show select figher display
       selectFighterDisplay.classList.remove('hidden')
     } else if (!grid.classList.contains('hidden')) {
       gridLevelOne.restart()
@@ -424,16 +531,14 @@ function init() {
     }
     // Remove all the classes in the grid
     removeEverything()
-    // Reset individual selectedPlayer boolean
+    // Reset individual selectedFighter boolean
     selectedAsterix = false
     selectedObelix = false
     // Reset the selectedPlayer boolean array
     selectedFighterBoolean= [selectedAsterix, selectedObelix ]
-    // Clear opponents and their movement/shot interval
-    
+    // Clear Romans and their movement/boulder interval
     romanBoulderInterval = null
     romanMovements = null
-
     // Reset the arrays
     romanOne = [2, 3, 4]
     romanTwo = [10, 11, 12, 13, 14, 15, 16]
@@ -457,6 +562,7 @@ function init() {
     gridLevelOne.restart()
   }  
 
+  // Function that occurs every time the player's fist hits the Romans to check if there are any Romans left
   function gameCheck() {
     // Clear the interval and set the intervals back to null
     clearInterval(romanMovements)
@@ -469,27 +575,45 @@ function init() {
     romanThree = [20, 21, 22, 23, 24, 25, 26]
     romanFour = [31, 32, 33, 34, 35]
     totalRomanArray = romanOne.concat(romanTwo.concat(romanThree.concat(romanFour)))
-    // Remove every classes is added within the cells
+    // Remove all the classes added to the grid
     removeEverything()
     // Reset starting position
     currentPosition = startingPosition
-    // Conditionals to check to proceed to the wonLevel/wonGame classes
+    highScoreChecker()
+    // Conditionals that check whether to proceed to the next level or show the win game class
     if (level === 1) {
-      // Show won level one
+      // Show level one won cut scene
+      levelMusic.pause()
+      levelStart.play()
+      levelStart.volume = 0.4
       grid.classList.add('hidden')
       levelOneComplete.classList.remove('hidden')
     } 
     else if (level === 2) {
+      levelMusic.pause()
+      levelStart.play()
       // Show won level two
+      levelStart.volume = 0.4
       grid.classList.add('hidden')
       levelTwoComplete.classList.remove('hidden')
     } else if (level === 3) {
+      levelMusic.pause()
       grid.classList.add('hidden')
       levelThreeComplete.classList.remove('hidden')
+      gameWon.play()
+      gameWon.volume = 0.3
     }
   }
 
   function levelTwo() {
+    levelMusic.currentTime = 0 // Rewind the audio to the beginning
+
+    // Listen for the 'ended' event and replay menuMusic when it ends
+    levelMusic.addEventListener('ended', function () {
+      levelMusic.currentTime = 0
+      levelMusic.play()
+    })
+    levelMusic.play()
     level = 2
     currentLevelDisplay.innerHTML = level
     // Interval is shortened
@@ -506,10 +630,18 @@ function init() {
     // Opponents shoot the football in a shorter interval 
     romanBoulderInterval = setInterval(() => {
       romanBoulders()
-    }, 1600)
+    }, 1300)
   }
 
   function levelThree() {
+    levelMusic.currentTime = 0 // Rewind the audio to the beginning
+
+    // Listen for the 'ended' event and replay menuMusic when it ends
+    levelMusic.addEventListener('ended', function () {
+      levelMusic.currentTime = 0
+      levelMusic.play()
+    })
+    levelMusic.play()
     level = 3
     currentLevelDisplay.innerHTML = level
     // Interval is shortened
@@ -526,19 +658,21 @@ function init() {
     // Opponents shoot the football in a shorter interval now
     romanBoulderInterval = setInterval(() => {
       romanBoulders()
-    }, 1200)
+    }, 1000)
   }
 
   createGrid()
-
+  
   
   hero.addEventListener('click', enterGame)
   document.addEventListener('keydown', movePlayer)
-  document.addEventListener('keydown', myShot)
+  document.addEventListener('keyup', myShot)
   fighterContainer.forEach(fighter => fighter.addEventListener('click', selectFighter))
   restartButton.addEventListener('click', restartGame)
   toLevelTwoButton.addEventListener('click', levelTwo)
   toLevelThreeButton.addEventListener('click', levelThree)
+  soundButton.addEventListener('click', muteAudio)
+
 }
 
 window.addEventListener('DOMContentLoaded', init)
