@@ -243,6 +243,7 @@ h2 {
   color: rgba(0, 0, 0, 1);
   border-radius: 10px;
   box-shadow: 0px 0px 20px rgb(255 255 255 / 40%);
+  border: 2px solid black;
 }
 .grid {
   display: grid;
@@ -359,12 +360,10 @@ h2 {
 }
 
 .opponent-container {
-  width: 720px;
+  width: 700px;
   height: 680px;
   text-align: center;
   background-color: blueviolet;
-  border-left: solid;
-  border-right: solid;
 }
 
 .opponent-container > img {
