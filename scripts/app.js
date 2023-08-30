@@ -56,25 +56,24 @@ function init() {
       soundButtonText.textContent = 'MUTE'
     }
   }
-  
-  
+
+  const highScore = localStorage.getItem('highscore')
   if (highScore !== null) {
     highScoreDisplay.innerHTML = highScore
   } else {
     highScoreDisplay.innerHTML = 0
   }
-
+  
+  
   function highScoreChecker() {
-    const highScoreFromStorage = parseInt(localStorage.getItem('highscore'))
-    
-    if (!isNaN(highScoreFromStorage)) {
-      // Convert the player's score to an integer if needed
-      const playerScore = parseInt(scoreDisplay.innerHTML)
-      
-      if (playerScore >= highScoreFromStorage) {
-        localStorage.setItem('highscore', playerScore)
-        highScoreDisplay.innerHTML = playerScore
+    // Save the final score if it is the highest score
+    if (highScore !== null) {
+      if (score >= parseInt(highScore)) {
+        localStorage.setItem('highscore', score)
+        highScoreDisplay.innerHTML = score
       }
+    } else {
+      localStorage.setItem('highscore', score)
     }
   }
   
@@ -95,8 +94,15 @@ function init() {
     // Hide startPage and unhide gameContainer
     startPage.classList.add('hidden')
     gameContainer.classList.remove('hidden')
+    menuMusic.currentTime = 0 // Rewind the audio to the beginning
     menuMusic.play()
-    
+    menuMusic.volume = 0.5
+
+    // Listen for the 'ended' event and replay menuMusic when it ends
+    menuMusic.addEventListener('ended', function () {
+      menuMusic.currentTime = 0
+      menuMusic.play()
+    })
   }
 
 
@@ -403,6 +409,7 @@ function init() {
       // Show 'Oh no!' when hit with a boulder
       cells[index].classList.add('oh-no')
       loseLife.play()
+      loseLife.volume = 0.6
       ohNo = setTimeout(() => {
         cells[index].classList.remove('oh-no')
       }, 200)
@@ -427,6 +434,7 @@ function init() {
   function startGame() {
     menuMusic.pause()
     levelStart.play()
+    levelStart.volume = 0.4
     // Hide the select fighter class
     selectFighterDisplay.classList.add('hidden')
     // Hide the container that contains fighter selection
@@ -435,8 +443,15 @@ function init() {
     // Unhide enter-level-one class (cutscene) and give a timeout of 3 seconds. Then hide enter-level-one (cutscene) and unhide grid class so game begins
     enteringGame = setTimeout(() => {
       // Enter the grid
-      
+      levelMusic.currentTime = 0 // Rewind the audio to the beginning
+
+      // Listen for the 'ended' event and replay menuMusic when it ends
+      levelMusic.addEventListener('ended', function () {
+        levelMusic.currentTime = 0
+        levelMusic.play()
+      })
       levelMusic.play()
+      
       enterLevelOne.classList.add('hidden')
       grid.classList.remove('hidden')
       document.body.classList.add('grid-visible')
@@ -451,10 +466,12 @@ function init() {
 
   // Function for when the game is lost
   function endGameLost() {
+    highScoreChecker()
     // Clear the Roman movement interval
     levelMusic.pause()
     loseLife.pause()
     gameOverMusic.play()
+    gameOverMusic.volume = 0.2
     clearInterval(romanMovements)
     // Show the lostGame display
     grid.classList.add('hidden')
@@ -568,6 +585,7 @@ function init() {
       // Show level one won cut scene
       levelMusic.pause()
       levelStart.play()
+      levelStart.volume = 0.4
       grid.classList.add('hidden')
       levelOneComplete.classList.remove('hidden')
     } 
@@ -575,6 +593,7 @@ function init() {
       levelMusic.pause()
       levelStart.play()
       // Show won level two
+      levelStart.volume = 0.4
       grid.classList.add('hidden')
       levelTwoComplete.classList.remove('hidden')
     } else if (level === 3) {
@@ -582,10 +601,18 @@ function init() {
       grid.classList.add('hidden')
       levelThreeComplete.classList.remove('hidden')
       gameWon.play()
+      gameWon.volume = 0.3
     }
   }
 
   function levelTwo() {
+    levelMusic.currentTime = 0 // Rewind the audio to the beginning
+
+    // Listen for the 'ended' event and replay menuMusic when it ends
+    levelMusic.addEventListener('ended', function () {
+      levelMusic.currentTime = 0
+      levelMusic.play()
+    })
     levelMusic.play()
     level = 2
     currentLevelDisplay.innerHTML = level
@@ -607,6 +634,13 @@ function init() {
   }
 
   function levelThree() {
+    levelMusic.currentTime = 0 // Rewind the audio to the beginning
+
+    // Listen for the 'ended' event and replay menuMusic when it ends
+    levelMusic.addEventListener('ended', function () {
+      levelMusic.currentTime = 0
+      levelMusic.play()
+    })
     levelMusic.play()
     level = 3
     currentLevelDisplay.innerHTML = level
@@ -632,7 +666,7 @@ function init() {
   
   hero.addEventListener('click', enterGame)
   document.addEventListener('keydown', movePlayer)
-  document.addEventListener('keydown', myShot)
+  document.addEventListener('keyup', myShot)
   fighterContainer.forEach(fighter => fighter.addEventListener('click', selectFighter))
   restartButton.addEventListener('click', restartGame)
   toLevelTwoButton.addEventListener('click', levelTwo)

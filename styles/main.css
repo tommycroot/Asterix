@@ -68,7 +68,7 @@ h3 {
 #to-level-two:active {
 
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
-  background-color: rgb(39, 151, 39);
+  background-color: rgb(59, 214, 59);
   transform: scale(1.1);
   
 }
@@ -89,7 +89,7 @@ h3 {
 #to-level-three:active {
 
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
-  background-color: rgb(39, 151, 39);
+  background-color: rgb(59, 214, 59);
   transform: scale(1.1);
 }
 
@@ -123,14 +123,14 @@ h3 {
 
 .how-to-play {
   color: black;
-  background-color: green;
+  background-color: rgb(59, 214, 59);
   border: 4px solid black;
   border-radius: 10px;
   padding: 20px;
 }
 
 #how-to, li, ul {
-  background-color: green;
+  background-color: rgb(59, 214, 59);
   font-size: 18px;
 }
 
@@ -153,6 +153,14 @@ ul {
   color: black;
   border: 4px solid black;
   transition: box-shadow 0.3s ease;
+}
+
+#romans {
+  margin-top: 90px;
+}
+
+#playAgain {
+  margin-bottom: 90px;
 }
 
 h2 {
@@ -321,13 +329,13 @@ h2 {
 .fighter-container:active,
 .fighter-container-active { /* Apply the active styles to the active class as well */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
-  background-color: rgb(39, 151, 39);
+  background-color: rgb(59, 214, 59);
   transform: scale(1.1); /* Add scale transformation */
 }
 
 .fighter-container:active > p {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
-  background-color: rgb(39, 151, 39);
+  background-color: rgb(59, 214, 59);
 }
 
 .getafix {
